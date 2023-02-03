@@ -11,9 +11,6 @@ const addBookHandler = (req, h) => {
       name, year, author, summary, publisher, pageCount, readPage, reading,
     } = req.payload;
 
-    const newBook = new Book(name, year, author, summary, publisher, pageCount, readPage, reading);
-    books.unshift(newBook);
-
     // if client dont input the 'name' property
     if (name === undefined) {
       return h.response(new ErrorResponse('fail', 'Gagal menambahkan buku. Mohon isi nama buku'))
@@ -25,6 +22,9 @@ const addBookHandler = (req, h) => {
       return h.response(new ErrorResponse('fail', 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount'))
         .code(400);
     }
+
+    const newBook = new Book(name, year, author, summary, publisher, pageCount, readPage, reading);
+    books.unshift(newBook);
 
     return h.response(new SuccessResponse('success', 'Buku berhasil ditambahkan', { bookId: newBook.id }))
       .code(201);
