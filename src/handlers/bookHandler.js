@@ -2,6 +2,7 @@ const Book = require('../models/Book');
 const ErrorResponse = require('../models/ErrorResponse');
 const SuccessResponse = require('../models/SuccesResponse');
 const books = require('../data/books');
+const getCurrentData = require('../libs/getCurrentData');
 
 const addBookHandler = (req, h) => {
   try {
@@ -44,4 +45,20 @@ const getAllBooks = (req, h) => {
   }
 };
 
-module.exports = { addBookHandler, getAllBooks };
+const getBookDetail = (req, h) => {
+  try {
+    const { bookId } = req.params;
+    const [book] = getCurrentData(books, bookId);
+    if (book) {
+      return h.response(new SuccessResponse('success', 'Berhasil mendapatkan data buku.', { book }))
+        .code(200);
+    }
+    return h.response(new ErrorResponse('fail', 'Buku tidak ditemukan'))
+      .code(404);
+  } catch {
+    return h.response(new ErrorResponse('fail', 'Gagal mendapatkan data buku'))
+      .code(500);
+  }
+};
+
+module.exports = { addBookHandler, getAllBooks, getBookDetail };
