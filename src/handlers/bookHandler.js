@@ -53,7 +53,6 @@ const getAllBooks = (req, h) => {
       return h.response(new SuccessResponse('success', 'Berhasil mendapatkan data buku', { books: [...readingBooks] }))
         .code(200);
     }
-
     // get all unfinished books
     if (finished === '0') {
       const unfinishedBooks = books.filter((item) => item.finished === false)
@@ -66,6 +65,14 @@ const getAllBooks = (req, h) => {
       const finishedBooks = books.filter((item) => item.finished === true)
         .map(({ id, name, publisher }) => ({ id, name, publisher }));
       return h.response(new SuccessResponse('success', 'Berhasil mendapatkan data buku', { books: [...finishedBooks] }))
+        .code(200);
+    }
+    // get books with specified name
+    if (name) {
+      // eslint-disable-next-line max-len
+      const filteredBooks = books.filter((item) => item.name.toLowerCase().includes(name.toLowerCase()))
+        .map(({ id, name, publisher }) => ({ id, name, publisher }));
+      return h.response(new SuccessResponse('success', 'Berhasil mendapatkan data buku', { books: [...filteredBooks] }))
         .code(200);
     }
 
