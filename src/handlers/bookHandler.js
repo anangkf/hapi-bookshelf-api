@@ -33,4 +33,15 @@ const addBookHandler = (req, h) => {
   }
 };
 
-module.exports = { addBookHandler };
+const getAllBooks = (req, h) => {
+  try {
+    const booksResp = books.map(({ id, name, publisher }) => ({ id, name, publisher }));
+    return h.response(new SuccessResponse('success', 'Berhasil mendapatkan data buku', { books: [...booksResp] }))
+      .code(200);
+  } catch {
+    return h.response(new ErrorResponse('fail', 'Gagal mendapatkan data buku'))
+      .code(500);
+  }
+};
+
+module.exports = { addBookHandler, getAllBooks };
