@@ -1,7 +1,7 @@
 const Book = require('../models/Book');
 const ErrorResponse = require('../models/ErrorResponse');
 const SuccessResponse = require('../models/SuccesResponse');
-const books = require('../data/books');
+let books = require('../data/books');
 const getCurrentData = require('../libs/getCurrentData');
 
 const addBookHandler = (req, h) => {
@@ -61,4 +61,42 @@ const getBookDetail = (req, h) => {
   }
 };
 
-module.exports = { addBookHandler, getAllBooks, getBookDetail };
+const editBookById = (req, h) => {
+  try {
+    const { bookId } = req.params;
+    const {
+      name, year, author, summary, publisher, pageCount, readPage, reading,
+    } = req.payload;
+    const [book] = getCurrentData(books, bookId);
+    books = books.map((item) => {
+      if (item.id === bookId) {
+        return {
+          ...item, name, year, author, summary, publisher, pageCount, readPage, reading,
+        };
+      }
+      return item;
+    });
+
+    if (!name) {
+      return h.response(new ErrorResponse('fail', 'Gagal memperbarui buku. Mohon isi nama buku'))
+        .code(400);
+    }
+    if (readPage > pageCount) {
+      return h.response(new ErrorResponse('fail', 'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount'))
+        .code(400);
+    }
+    if (!book) {
+      return h.response(new ErrorResponse('fail', 'Gagal memperbarui buku. Id tidak ditemukan'))
+        .code(404);
+    }
+    return h.response(new SuccessResponse('success', 'Buku berhasil diperbarui'))
+      .code(200);
+  } catch {
+    return h.response(new ErrorResponse('fail', 'Gagal mendapatkan data buku'))
+      .code(500);
+  }
+};
+
+module.exports = {
+  addBookHandler, getAllBooks, getBookDetail, editBookById,
+};
