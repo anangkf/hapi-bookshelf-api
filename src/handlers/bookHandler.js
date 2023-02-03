@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 const Book = require('../models/Book');
 const ErrorResponse = require('../models/ErrorResponse');
 const SuccessResponse = require('../models/SuccesResponse');
@@ -36,7 +37,23 @@ const addBookHandler = (req, h) => {
 
 const getAllBooks = (req, h) => {
   try {
+    const { name, reading, finished } = req.query;
     const booksResp = books.map(({ id, name, publisher }) => ({ id, name, publisher }));
+    // get all unreading books
+    if (reading === '0') {
+      const unreadingBooks = books.filter((item) => item.finished === false)
+        .map(({ id, name, publisher }) => ({ id, name, publisher }));
+      return h.response(new SuccessResponse('success', 'Berhasil mendapatkan data buku', { books: [...unreadingBooks] }))
+        .code(200);
+    }
+    // get all reading books
+    if (reading === '1') {
+      const readingBooks = books.filter((item) => item.reading === true)
+        .map(({ id, name, publisher }) => ({ id, name, publisher }));
+      return h.response(new SuccessResponse('success', 'Berhasil mendapatkan data buku', { books: [...readingBooks] }))
+        .code(200);
+    }
+
     return h.response(new SuccessResponse('success', 'Berhasil mendapatkan data buku', { books: [...booksResp] }))
       .code(200);
   } catch {

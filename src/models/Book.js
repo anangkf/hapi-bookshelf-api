@@ -11,7 +11,7 @@ class Book {
     this.publisher = publisher;
     this.pageCount = pageCount;
     this.readPage = readPage;
-    this.finished = reading === pageCount;
+    this.finished = readPage === pageCount;
     this.reading = reading;
     this.insertedAt = new Date().toISOString();
     this.updatedAt = this.insertedAt;
