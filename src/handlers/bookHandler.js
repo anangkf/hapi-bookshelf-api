@@ -68,14 +68,6 @@ const editBookById = (req, h) => {
       name, year, author, summary, publisher, pageCount, readPage, reading,
     } = req.payload;
     const [book] = getCurrentData(books, bookId);
-    books = books.map((item) => {
-      if (item.id === bookId) {
-        return {
-          ...item, name, year, author, summary, publisher, pageCount, readPage, reading,
-        };
-      }
-      return item;
-    });
 
     if (!name) {
       return h.response(new ErrorResponse('fail', 'Gagal memperbarui buku. Mohon isi nama buku'))
@@ -89,6 +81,16 @@ const editBookById = (req, h) => {
       return h.response(new ErrorResponse('fail', 'Gagal memperbarui buku. Id tidak ditemukan'))
         .code(404);
     }
+
+    // manipulate bookshelf only if all condition passed
+    books = books.map((item) => {
+      if (item.id === bookId) {
+        return {
+          ...item, name, year, author, summary, publisher, pageCount, readPage, reading,
+        };
+      }
+      return item;
+    });
     return h.response(new SuccessResponse('success', 'Buku berhasil diperbarui'))
       .code(200);
   } catch {
