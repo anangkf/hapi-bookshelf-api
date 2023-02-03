@@ -41,7 +41,7 @@ const getAllBooks = (req, h) => {
     const booksResp = books.map(({ id, name, publisher }) => ({ id, name, publisher }));
     // get all unreading books
     if (reading === '0') {
-      const unreadingBooks = books.filter((item) => item.finished === false)
+      const unreadingBooks = books.filter((item) => item.reading === false)
         .map(({ id, name, publisher }) => ({ id, name, publisher }));
       return h.response(new SuccessResponse('success', 'Berhasil mendapatkan data buku', { books: [...unreadingBooks] }))
         .code(200);
@@ -51,6 +51,21 @@ const getAllBooks = (req, h) => {
       const readingBooks = books.filter((item) => item.reading === true)
         .map(({ id, name, publisher }) => ({ id, name, publisher }));
       return h.response(new SuccessResponse('success', 'Berhasil mendapatkan data buku', { books: [...readingBooks] }))
+        .code(200);
+    }
+
+    // get all unfinished books
+    if (finished === '0') {
+      const unfinishedBooks = books.filter((item) => item.finished === false)
+        .map(({ id, name, publisher }) => ({ id, name, publisher }));
+      return h.response(new SuccessResponse('success', 'Berhasil mendapatkan data buku', { books: [...unfinishedBooks] }))
+        .code(200);
+    }
+    // get all finished books
+    if (finished === '1') {
+      const finishedBooks = books.filter((item) => item.finished === true)
+        .map(({ id, name, publisher }) => ({ id, name, publisher }));
+      return h.response(new SuccessResponse('success', 'Berhasil mendapatkan data buku', { books: [...finishedBooks] }))
         .code(200);
     }
 
