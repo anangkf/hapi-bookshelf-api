@@ -97,6 +97,23 @@ const editBookById = (req, h) => {
   }
 };
 
+const deleteBookById = (req, h) => {
+  try {
+    const { bookId } = req.params;
+    const [book] = getCurrentData(books, bookId);
+    books = books.filter((item) => item.id !== bookId);
+    if (!book) {
+      return h.response(new ErrorResponse('fail', 'Buku gagal dihapus. Id tidak ditemukan'))
+        .code(404);
+    }
+    return h.response(new SuccessResponse('success', 'Buku berhasil dihapus'))
+      .code(200);
+  } catch {
+    return h.response(new ErrorResponse('fail', 'Gagal mendapatkan data buku'))
+      .code(500);
+  }
+};
+
 module.exports = {
-  addBookHandler, getAllBooks, getBookDetail, editBookById,
+  addBookHandler, getAllBooks, getBookDetail, editBookById, deleteBookById,
 };
